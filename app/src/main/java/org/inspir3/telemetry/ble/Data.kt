@@ -1,4 +1,4 @@
-package org.inspir3.telemetry
+package org.inspir3.telemetry.ble
 
 class Data(
     var temperature: Short = -32768,

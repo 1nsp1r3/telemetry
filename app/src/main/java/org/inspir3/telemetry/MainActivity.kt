@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -16,8 +17,10 @@ import androidx.compose.ui.Modifier
 import io.reactivex.rxjava3.disposables.Disposable
 import org.inspir3.common.I3
 import org.inspir3.common.NotificationHelper
+import org.inspir3.telemetry.ble.BleGapScanCallBack
 import org.inspir3.telemetry.ui.theme.TelemetryTheme
 import org.inspir3.telemetry.view.MainView
+import org.inspir3.telemetry.view.Route
 import org.inspir3.telemetry.view.SettingsView
 
 class MainActivity : ComponentActivity() {
@@ -26,6 +29,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var bleListenerDisposable: Disposable
     private lateinit var configuration: Configuration
     private lateinit var intentService: Intent
+
+    private val appViewModel by viewModels<AppViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(I3.TAG, "MainActivity.onCreate()")
@@ -79,15 +84,23 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun startForegroundService() {
+        Log.d(I3.TAG, "MainActivity.startForegroundService()")
+
+        if (this.appViewModel.foregroundServiceRunning){
+            Log.i(I3.TAG, "ForegroundService already running")
+            return
+        }
+
         NotificationHelper.createChannel(this)
         this.intentService = Intent(this, MainForegroundService::class.java)
         applicationContext.startForegroundService(this.intentService)
+        this.appViewModel.foregroundServiceRunning = true
     }
 
     private fun bleListener(): Disposable {
         Log.d(I3.TAG, "MainActivity.bleListener()")
 
-        return Telemetry.data.subscribe { data ->
+        return BleGapScanCallBack.data.subscribe { data ->
             Telemetry.history.add(data)
 
             val temperatureText = "%.2f".format(
@@ -105,7 +118,7 @@ class MainActivity : ComponentActivity() {
 
             Telemetry.temperatureGraphState.data = Telemetry.getAllTemperatures()
             Telemetry.pressureGraphState.data = Telemetry.getAllPressuresAsBar()
-            Log.i(I3.TAG, "${Telemetry.temperatureGraphState.text} ${Telemetry.pressureGraphState.text}")
+            //Log.i(I3.TAG, "${Telemetry.temperatureGraphState.text} ${Telemetry.pressureGraphState.text}")
         }
     }
 }

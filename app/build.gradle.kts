@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("io.reactivex.rxjava3:rxjava:3.1.8")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")

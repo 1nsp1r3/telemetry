@@ -1,14 +1,13 @@
 package org.inspir3.telemetry
 
-import io.reactivex.rxjava3.subjects.PublishSubject
 import org.inspir3.common.compose.GraphState
+import org.inspir3.telemetry.ble.Data
 
 class Telemetry {
     companion object {
         val temperatureGraphState = GraphState()
         val pressureGraphState = GraphState()
 
-        val data: PublishSubject<Data> = PublishSubject.create()
         val history: MutableList<Data> = mutableListOf()
 
         fun getShortAsFloat(value: Short): Float = value.toFloat().div(100)
