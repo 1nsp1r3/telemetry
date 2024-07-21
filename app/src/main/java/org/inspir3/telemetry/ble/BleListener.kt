@@ -31,8 +31,8 @@ class BleListener {
                 Telemetry.pressure.max = Telemetry.getPressureAsText(Telemetry.max.pressure)
 
                 //Actualise charts data
-                Telemetry.temperature.data = Telemetry.getAllTemperatures()
-                Telemetry.pressure.data = Telemetry.getAllPressuresAsBar()
+                Telemetry.temperature.data = Telemetry.getLastTemperatures(Telemetry.temperaturePoints)
+                Telemetry.pressure.data = Telemetry.getLastPressuresAsBar(Telemetry.pressurePoints)
             }
         }
     }

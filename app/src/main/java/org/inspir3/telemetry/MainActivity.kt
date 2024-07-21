@@ -64,8 +64,6 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         Log.d(I3.TAG, "MainActivity.onDestroy()")
         super.onDestroy()
-
-
     }
 
     private fun init() {
@@ -75,6 +73,9 @@ class MainActivity : ComponentActivity() {
 
         this.configuration = Configuration(this)
         this.configuration.load()
+        //Yurk!
+        Telemetry.temperaturePoints = this.configuration.temperaturePoints
+        Telemetry.pressurePoints = this.configuration.pressurePoints
         this.startForegroundService()
         this.init = true
     }

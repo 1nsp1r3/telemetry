@@ -2,9 +2,10 @@
 - Log and graph telemetry data from https://github.com/1nsp1r3/esp32/tree/main/bosch project
 
 # TODO
-- Toucher la notif affiche l'appli
+- Trouver une meilleure solution que les Yurk!
+- Axe X en heure
+- Envoyer donner brut sonde et filter coté android
 - Loger dans un fichier
-- Fenetre glissante sur les données à grapher
 - Ne plas planter au démarrage si il manque les droits
 
 # Principe
@@ -45,30 +46,17 @@
 ```
 
 ```
- ________       ____________________    _________________________ 
-|        |     |                    |  |                         |
-| ESP-S3 |     | BleGapScanCallBack |  | BleGapScanCallBack.data |
-|________|     |____________________|  |_________________________|
-    |                    |                          |
-    |---- GAP packet --->|                          |
-    |                    |------- onNext(data) ---->|
-    |---- GAP packet --->|                          |
-    |                    |------- onNext(data) ---->|
-    |---- GAP packet --->|                          |
-    |                    |------- onNext(data) ---->|
-    |                    |                          |
-```
-
-```
- _________________________     _______________ 
-|                         |   |               |
-| BleGapScanCallBack.data |   | bleListener() |
-|_________________________|   |_______________|
-        |                             |
-        |---------- new data -------->|
-        |                             |
-        |---------- new data -------->|
-        |                             |
-        |---------- new data -------->|
-        |                             |
+ ________       ____________________    _________________________    _______________ 
+|        |     |                    |  |                         |  |               |
+| ESP-S3 |     | BleGapScanCallBack |  | BleGapScanCallBack.data |  | bleListener() |
+|________|     |____________________|  |_________________________|  |_______________|
+    |                    |                          |                       |
+    |---- GAP packet --->|                          |                       |
+    |                    |------- onNext(data) ---->|                       |
+    |---- GAP packet --->|                          |------ new data ------>|
+    |                    |------- onNext(data) ---->|                       |
+    |---- GAP packet --->|                          |------ new data ------>|
+    |                    |------- onNext(data) ---->|                       |
+    |                    |                          |------ new data ------>|
+    |                    |                          |                       |
 ```
