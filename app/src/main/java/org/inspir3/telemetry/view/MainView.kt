@@ -1,6 +1,7 @@
 package org.inspir3.telemetry.view
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -9,9 +10,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import org.inspir3.common.DateTime
 import org.inspir3.common.compose.Graph
 import org.inspir3.telemetry.Configuration
@@ -27,7 +31,6 @@ fun MainView(configuration: Configuration, settingRoute: () -> Unit = {}, temper
     debugData = "$delay | data count: ${Telemetry.history.size}"
 
     Column(Modifier.fillMaxWidth()) {
-        Text(debugData)
         Graph(
             label = "Temperature",
             color = Color.Yellow.toArgb(),
@@ -50,8 +53,18 @@ fun MainView(configuration: Configuration, settingRoute: () -> Unit = {}, temper
             data = pressure.data,
         )
         ChartLegendView(min = pressure.min, actual = pressure.actual, max = pressure.max, legend = " bars", color = Color.Cyan)
-        Button(onClick = { settingRoute() }) {
-            Text("Settings")
+        Row(verticalAlignment = Alignment.Bottom) {
+            Button(onClick = { settingRoute() }) {
+                Text("Settings")
+            }
+            Text(
+                text = debugData,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                textAlign = TextAlign.Right,
+                fontSize = 12.sp,
+            )
         }
     }
 }

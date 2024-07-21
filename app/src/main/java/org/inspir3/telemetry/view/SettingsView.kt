@@ -14,19 +14,12 @@ import org.inspir3.telemetry.Default
 
 @Composable
 fun SettingsView(configuration: Configuration, mainRoute: () -> Unit = {}) {
-    val chartRefreshDelayText = remember { mutableStateOf(configuration.chartRefreshDelay.toString()) }
     val temperatureYminText = remember { mutableStateOf(configuration.temperatureYmin.toString()) }
     val temperatureYmaxText = remember { mutableStateOf(configuration.temperatureYmax.toString()) }
     val pressureYminText = remember { mutableStateOf(configuration.pressureYmin.toString()) }
     val pressureYmaxText = remember { mutableStateOf(configuration.pressureYmax.toString()) }
 
     Column(Modifier.fillMaxWidth()) {
-        InputWholeNumber(
-            label = "Chart refresh delay in seconds (default: ${Default.CHART_REFRESH_DELAY})",
-            value = chartRefreshDelayText,
-            onUpdate = { configuration.chartRefreshDelay = it },
-            defaultValue = Default.CHART_REFRESH_DELAY,
-        )
         InputWholeNumber(
             label = "Temperature Y min (default: ${Default.TEMPERATURE_YMIN})",
             value = temperatureYminText,
