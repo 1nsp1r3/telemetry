@@ -7,9 +7,12 @@ package org.inspir3.common
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import org.inspir3.telemetry.MainActivity
 
 class NotificationHelper {
     companion object {
@@ -42,7 +45,18 @@ class NotificationHelper {
                 .setSmallIcon(icon)
                 .setContentTitle(title)
                 .setContentText(content)
+                .setContentIntent( //When user touch the notification
+                    createContentIntent(context)
+                )
                 .build()
+        }
+
+        /**
+         * Need <activity android:launchMode="singleInstance"> if you doesn't want a new instance of MainActivity (even the ViewModel!)
+         */
+        private fun createContentIntent(context: Context): PendingIntent {
+            val intent = Intent(context, MainActivity::class.java)
+            return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         }
     }
 }
