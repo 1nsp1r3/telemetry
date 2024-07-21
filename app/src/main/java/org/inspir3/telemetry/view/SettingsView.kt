@@ -17,25 +17,39 @@ fun SettingsView(configuration: Configuration, mainRoute: () -> Unit = {}) {
     val chartRefreshDelayText = remember { mutableStateOf(configuration.chartRefreshDelay.toString()) }
     val temperatureYminText = remember { mutableStateOf(configuration.temperatureYmin.toString()) }
     val temperatureYmaxText = remember { mutableStateOf(configuration.temperatureYmax.toString()) }
+    val pressureYminText = remember { mutableStateOf(configuration.pressureYmin.toString()) }
+    val pressureYmaxText = remember { mutableStateOf(configuration.pressureYmax.toString()) }
 
     Column(Modifier.fillMaxWidth()) {
         InputWholeNumber(
-            label = "Chart refresh delay in seconds (default: 5)",
+            label = "Chart refresh delay in seconds (default: ${Default.CHART_REFRESH_DELAY})",
             value = chartRefreshDelayText,
             onUpdate = { configuration.chartRefreshDelay = it },
             defaultValue = Default.CHART_REFRESH_DELAY,
         )
         InputWholeNumber(
-            label = "Temperature Y min (default: -30)",
+            label = "Temperature Y min (default: ${Default.TEMPERATURE_YMIN})",
             value = temperatureYminText,
             onUpdate = { configuration.temperatureYmin = it },
             defaultValue = Default.TEMPERATURE_YMIN,
         )
         InputWholeNumber(
-            label = "Temperature Y max (default: 150)",
+            label = "Temperature Y max (default: ${Default.TEMPERATURE_YMAX})",
             value = temperatureYmaxText,
             onUpdate = { configuration.temperatureYmax = it },
             defaultValue = Default.TEMPERATURE_YMAX,
+        )
+        InputWholeNumber(
+            label = "Pressure Y min (default: ${Default.PRESSURE_YMIN})",
+            value = pressureYminText,
+            onUpdate = { configuration.pressureYmin = it },
+            defaultValue = Default.PRESSURE_YMIN,
+        )
+        InputWholeNumber(
+            label = "Pressure Y max (default: ${Default.PRESSURE_YMAX})",
+            value = pressureYmaxText,
+            onUpdate = { configuration.pressureYmax = it },
+            defaultValue = Default.PRESSURE_YMAX,
         )
         Button(onClick = {
             configuration.save()

@@ -46,8 +46,8 @@ fun MainView(configuration: Configuration, settingRoute: () -> Unit = {}) {
         Graph(
             label = "Pressure",
             color = Color.CYAN,
-            ymin = 0f,
-            ymax = 10f,
+            ymin = configuration.pressureYmin.toFloat(),
+            ymax = configuration.pressureYmax.toFloat(),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
