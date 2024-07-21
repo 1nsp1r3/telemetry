@@ -5,9 +5,6 @@
 package org.inspir3.common.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.LineChart
@@ -16,20 +13,14 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 
-class GraphState(
-    var data: List<Float> = listOf(),
-) {
-    var text: String by mutableStateOf("")
-}
-
 @Composable
 fun Graph(
-    label: String,
+    label: String, //isn't displayed
     color: Int,
     ymin: Float,
     ymax: Float,
     modifier: Modifier,
-    graphState: GraphState,
+    data: List<Float> = listOf(),
 ) {
     AndroidView(
         factory = { context ->
@@ -42,19 +33,17 @@ fun Graph(
             chart.getAxis(YAxis.AxisDependency.RIGHT).isEnabled = false
 
             //text
-            chart.description.textColor = color
-            chart.description.textSize = 24f
+            chart.description.isEnabled = false
 
             //legend
             chart.legend.isEnabled = false
 
             chart //return
         },
-        //Called each time a state value change in GraphState
+        //I don't known who/what trigger the call of this update function
         update = { chart ->
-            chart.description.text = graphState.text
             chart.setData(
-                getLineData(label, color, graphState.data)
+                getLineData(label, color, data)
             )
             chart.invalidate()
         },

@@ -2,7 +2,10 @@
 - Log and graph telemetry data from https://github.com/1nsp1r3/esp32/tree/main/bosch project
 
 # TODO
+- Toucher la notif affiche l'appli
+- Loger dans un fichier
 - Fenetre glissante sur les données à grapher
+- Ne plas planter au démarrage si il manque les droits
 
 # Principe
 ## Hardware
