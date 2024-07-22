@@ -10,14 +10,14 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 
-
 class BleListener {
     companion object {
+        private val zone = ZoneId.of("Europe/Paris")
+        private var firstLogLine = true
+
         fun create(textFile: TextFile): Disposable {
             Log.d(I3.TAG, "BleListener.create()")
 
-            val zone = ZoneId.of("Europe/Paris")
-            var firstLogLine = true
             return BleGapScanCallBack.data.subscribe { data ->
                 Telemetry.history.add(data)
 
@@ -42,18 +42,28 @@ class BleListener {
                 Telemetry.temperature.data = Telemetry.getLastTemperatures(Settings.temperaturePoints)
                 Telemetry.pressure.data = Telemetry.getLastPressuresAsBar(Settings.pressurePoints)
 
-                //Log file
-                val now = LocalDateTime.now()
-                val zoneOffSet: ZoneOffset = zone.rules.getOffset(now)
-                val ts = now.toEpochSecond(zoneOffSet)
-                var logLine = """{"time":${ts},"temperature":${data.temperature},"pressure":${data.pressure}}"""
-                if (firstLogLine) {
-                    firstLogLine = false
-                } else {
-                    logLine = ",$logLine"
-                }
-                textFile.println(logLine)
+                logToJsonFile(textFile, data)
             }
+        }
+
+        private fun logToJsonFile(textFile: TextFile, data: Data) {
+            if (!Settings.logFile) return
+
+            if (textFile.textFile == null) {
+                textFile.openForToday()
+                textFile.println("[")
+            }
+
+            val now = LocalDateTime.now()
+            val zoneOffSet: ZoneOffset = zone.rules.getOffset(now)
+            val ts = now.toEpochSecond(zoneOffSet)
+            var logLine = """{"time":${ts},"temperature":${data.temperature},"pressure":${data.pressure}}"""
+            if (firstLogLine) {
+                firstLogLine = false
+            } else {
+                logLine = ",$logLine"
+            }
+            textFile.println(logLine)
         }
     }
 }

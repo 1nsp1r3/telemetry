@@ -3,6 +3,7 @@ package org.inspir3.telemetry
 import android.content.Context
 import android.util.Log
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -23,6 +24,7 @@ class Default {
         const val PRESSURE_YMIN = 0
         const val PRESSURE_YMAX = 10
         const val PRESSURE_POINTS = 300 //around 5 minutes
+        const val LOG_FILE = true
     }
 }
 
@@ -34,6 +36,7 @@ class Settings {
         var pressureYmin: Int = Default.PRESSURE_YMIN
         var pressureYmax: Int = Default.PRESSURE_YMAX
         var pressurePoints: Int = Default.PRESSURE_POINTS
+        var logFile: Boolean = Default.LOG_FILE
 
         //Divers
         val startTime: LocalDateTime = LocalDateTime.now()
@@ -48,6 +51,7 @@ class Settings {
                 pressureYmin = loadInt(context, "pressureYmin", Default.PRESSURE_YMIN)
                 pressureYmax = loadInt(context, "pressureYmax", Default.PRESSURE_YMAX)
                 pressurePoints = loadInt(context, "pressurePoints", Default.PRESSURE_POINTS)
+                logFile = loadBoolean(context, "logFile", Default.LOG_FILE)
             }
             log()
         }
@@ -62,6 +66,7 @@ class Settings {
                 save(context, "pressureYmin", pressureYmin)
                 save(context, "pressureYmax", pressureYmax)
                 save(context, "pressurePoints", pressurePoints)
+                save(context, "logFile", logFile)
             }
             this.log()
         }
@@ -74,6 +79,7 @@ class Settings {
             Log.d(I3.TAG, "pressureYmin: $pressureYmin")
             Log.d(I3.TAG, "pressureYmax: $pressureYmax")
             Log.d(I3.TAG, "pressurePoints: $pressurePoints")
+            Log.d(I3.TAG, "logFile: $logFile")
         }
 
         /**
@@ -88,10 +94,31 @@ class Settings {
         }
 
         /**
+         * Helper to load a boolean
+         */
+        private suspend fun loadBoolean(context: Context, name: String, default: Boolean): Boolean {
+            val key = booleanPreferencesKey(name)
+            val flow: Flow<Boolean> = context.dataStore.data.map {
+                it[key] ?: default
+            }
+            return flow.first()
+        }
+
+        /**
          * Helper to save an int
          */
         private suspend fun save(context: Context, name: String, value: Int) {
             val key = intPreferencesKey(name)
+            context.dataStore.edit {
+                it[key] = value
+            }
+        }
+
+        /**
+         * Helper to save a boolean
+         */
+        private suspend fun save(context: Context, name: String, value: Boolean) {
+            val key = booleanPreferencesKey(name)
             context.dataStore.edit {
                 it[key] = value
             }

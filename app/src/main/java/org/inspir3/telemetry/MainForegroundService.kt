@@ -8,8 +8,6 @@ import org.inspir3.common.ble.Gap
 import org.inspir3.common.file.TextFile
 import org.inspir3.telemetry.ble.BleGapScanCallBack
 import org.inspir3.telemetry.ble.BleListener
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class MainForegroundService : ForegroundService(
     icon = R.mipmap.ic_launcher,
@@ -33,16 +31,22 @@ class MainForegroundService : ForegroundService(
         Log.d(I3.TAG, "MainForegroundService.onStop()")
 
         this.bleListenerDisposable.dispose()
-        textFile.println("]")
-        textFile.close()
+        this.closeFile()
+
         gap.stopScan()
     }
 
     private fun createLogFile() {
-        val yyyyMMddHHmm = LocalDateTime.now().format(
-            DateTimeFormatter.ofPattern("yyyyMMddHHmm")
-        )
-        textFile.open(filename = "${yyyyMMddHHmm}.json")
+        if (!Settings.logFile) return
+
+        textFile.openForToday()
         textFile.println("[")
+    }
+
+    private fun closeFile() {
+        if (!Settings.logFile) return
+
+        textFile.println("]")
+        textFile.close()
     }
 }

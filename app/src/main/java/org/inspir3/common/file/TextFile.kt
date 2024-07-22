@@ -8,9 +8,11 @@ import android.os.Environment
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class TextFile {
-    private lateinit var textFile: BufferedWriter
+    var textFile: BufferedWriter? = null
 
     fun open(filename: String) {
         val dirpath = "${Environment.getExternalStorageDirectory()}/Download/"
@@ -19,8 +21,15 @@ class TextFile {
         textFile = BufferedWriter(fileWriter)
     }
 
+    fun openForToday() {
+        val yyyyMMddHHmm = LocalDateTime.now().format(
+            DateTimeFormatter.ofPattern("yyyyMMddHHmm")
+        )
+        this.open(filename = "${yyyyMMddHHmm}.json")
+    }
+
     fun print(text: String) {
-        textFile.write(text)
+        textFile?.write(text)
     }
 
     fun println(text: String) {
@@ -28,10 +37,10 @@ class TextFile {
     }
 
     fun flush() {
-        textFile.flush()
+        textFile?.flush()
     }
 
     fun close() {
-        textFile.close()
+        textFile?.close()
     }
 }
