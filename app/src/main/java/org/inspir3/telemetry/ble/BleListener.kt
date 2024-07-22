@@ -3,13 +3,19 @@ package org.inspir3.telemetry.ble
 import android.util.Log
 import io.reactivex.rxjava3.disposables.Disposable
 import org.inspir3.common.I3
+import org.inspir3.common.file.TextFile
 import org.inspir3.telemetry.Telemetry
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+
 
 class BleListener {
     companion object {
-        fun create(): Disposable {
+        fun create(textFile: TextFile): Disposable {
             Log.d(I3.TAG, "BleListener.create()")
 
+            val zone = ZoneId.of("Europe/Paris")
             return BleGapScanCallBack.data.subscribe { data ->
                 Telemetry.history.add(data)
 
@@ -33,6 +39,12 @@ class BleListener {
                 //Actualise charts data
                 Telemetry.temperature.data = Telemetry.getLastTemperatures(Telemetry.temperaturePoints)
                 Telemetry.pressure.data = Telemetry.getLastPressuresAsBar(Telemetry.pressurePoints)
+
+                //Log file
+                val now = LocalDateTime.now()
+                val zoneOffSet: ZoneOffset = zone.rules.getOffset(now)
+                val ts = now.toEpochSecond(zoneOffSet)
+                textFile.println("""{"time":${ts},"temperature":${data.temperature},"pressure":${data.pressure}},""")
             }
         }
     }

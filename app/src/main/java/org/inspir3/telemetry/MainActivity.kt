@@ -64,6 +64,8 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         Log.d(I3.TAG, "MainActivity.onDestroy()")
         super.onDestroy()
+
+        applicationContext.stopService(this.intentService)
     }
 
     private fun init() {
