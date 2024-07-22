@@ -2,11 +2,11 @@
 - Log and graph telemetry data from https://github.com/1nsp1r3/esp32/tree/main/bosch project
 
 # TODO
-- Trouver une meilleure solution que les Yurk!
-- Axe X en heure
+- Recharger un ancien json
 - Envoyer donner brut sonde et filter coté android
-- Loger dans un fichier
-- Ne plas planter au démarrage si il manque les droits
+- Axe X en heure
+- Pouvoir désactiver le log file
+- Ne pas planter au démarrage si il manque les droits
 
 # Principe
 ## Hardware

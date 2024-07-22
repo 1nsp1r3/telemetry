@@ -4,6 +4,7 @@ import android.util.Log
 import io.reactivex.rxjava3.disposables.Disposable
 import org.inspir3.common.I3
 import org.inspir3.common.file.TextFile
+import org.inspir3.telemetry.Settings
 import org.inspir3.telemetry.Telemetry
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -16,6 +17,7 @@ class BleListener {
             Log.d(I3.TAG, "BleListener.create()")
 
             val zone = ZoneId.of("Europe/Paris")
+            var firstLogLine = true
             return BleGapScanCallBack.data.subscribe { data ->
                 Telemetry.history.add(data)
 
@@ -37,14 +39,20 @@ class BleListener {
                 Telemetry.pressure.max = Telemetry.getPressureAsText(Telemetry.max.pressure)
 
                 //Actualise charts data
-                Telemetry.temperature.data = Telemetry.getLastTemperatures(Telemetry.temperaturePoints)
-                Telemetry.pressure.data = Telemetry.getLastPressuresAsBar(Telemetry.pressurePoints)
+                Telemetry.temperature.data = Telemetry.getLastTemperatures(Settings.temperaturePoints)
+                Telemetry.pressure.data = Telemetry.getLastPressuresAsBar(Settings.pressurePoints)
 
                 //Log file
                 val now = LocalDateTime.now()
                 val zoneOffSet: ZoneOffset = zone.rules.getOffset(now)
                 val ts = now.toEpochSecond(zoneOffSet)
-                textFile.println("""{"time":${ts},"temperature":${data.temperature},"pressure":${data.pressure}},""")
+                var logLine = """{"time":${ts},"temperature":${data.temperature},"pressure":${data.pressure}}"""
+                if (firstLogLine) {
+                    firstLogLine = false
+                } else {
+                    logLine = ",$logLine"
+                }
+                textFile.println(logLine)
             }
         }
     }

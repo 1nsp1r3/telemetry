@@ -15,27 +15,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import org.inspir3.common.DateTime
 import org.inspir3.common.compose.Graph
-import org.inspir3.telemetry.Configuration
 import org.inspir3.telemetry.GraphData
+import org.inspir3.telemetry.Settings
 import org.inspir3.telemetry.Telemetry
 import java.time.LocalDateTime
 
+@Preview(showBackground = false)
 @Composable
-fun MainView(configuration: Configuration, settingRoute: () -> Unit = {}, temperature: GraphData, pressure: GraphData) {
+fun MainView(settingRoute: () -> Unit = {}, temperature: GraphData = GraphData(), pressure: GraphData = GraphData()) {
     var debugData by remember { mutableStateOf("") }
 
-    val delay = DateTime.getDelay(configuration.startTime, LocalDateTime.now())
+    val delay = DateTime.getDelay(Settings.startTime, LocalDateTime.now())
     debugData = "$delay | data count: ${Telemetry.history.size}"
 
     Column(Modifier.fillMaxWidth()) {
         Graph(
             label = "Temperature",
             color = Color.Yellow.toArgb(),
-            ymin = configuration.temperatureYmin.toFloat(),
-            ymax = configuration.temperatureYmax.toFloat(),
+            ymin = Settings.temperatureYmin.toFloat(),
+            ymax = Settings.temperatureYmax.toFloat(),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
@@ -45,8 +47,8 @@ fun MainView(configuration: Configuration, settingRoute: () -> Unit = {}, temper
         Graph(
             label = "Pressure",
             color = Color.Cyan.toArgb(),
-            ymin = configuration.pressureYmin.toFloat(),
-            ymax = configuration.pressureYmax.toFloat(),
+            ymin = Settings.pressureYmin.toFloat(),
+            ymax = Settings.pressureYmax.toFloat(),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),

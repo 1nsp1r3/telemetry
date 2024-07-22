@@ -24,7 +24,6 @@ import org.inspir3.telemetry.view.SettingsView
 class MainActivity : ComponentActivity() {
     private var init = false
 
-    private lateinit var configuration: Configuration
     private lateinit var intentService: Intent
 
     private val appViewModel by viewModels<AppViewModel>()
@@ -45,14 +44,13 @@ class MainActivity : ComponentActivity() {
 
                     when (currentRoute) {
                         Route.MAIN -> MainView(
-                            configuration = configuration,
                             settingRoute = { currentRoute = Route.SETTINGS },
                             temperature = Telemetry.temperature,
                             pressure = Telemetry.pressure,
                         )
 
                         Route.SETTINGS -> SettingsView(
-                            configuration = configuration,
+                            context = this,
                             mainRoute = { currentRoute = Route.MAIN },
                         )
                     }
@@ -73,11 +71,7 @@ class MainActivity : ComponentActivity() {
 
         if (this.init) return
 
-        this.configuration = Configuration(this)
-        this.configuration.load()
-        //Yurk!
-        Telemetry.temperaturePoints = this.configuration.temperaturePoints
-        Telemetry.pressurePoints = this.configuration.pressurePoints
+        Settings.load(this)
         this.startForegroundService()
         this.init = true
     }
