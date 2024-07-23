@@ -19,7 +19,10 @@ import org.inspir3.telemetry.Default
 import org.inspir3.telemetry.Settings
 
 @Composable
-fun SettingsView(context: Context, mainRoute: () -> Unit = {}) {
+fun SettingsView(
+    mainRoute: () -> Unit = {},
+    context: Context,
+) {
     val temperatureYminText = remember { mutableStateOf(Settings.temperatureYmin.toString()) }
     val temperatureYmaxText = remember { mutableStateOf(Settings.temperatureYmax.toString()) }
     val temperaturePointsText = remember { mutableStateOf(Settings.temperaturePoints.toString()) }
@@ -68,7 +71,9 @@ fun SettingsView(context: Context, mainRoute: () -> Unit = {}) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = "Log file ? (default: yes)",
-                modifier = Modifier.fillMaxWidth().weight(1f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
             )
             Switch(
                 checked = logFile,

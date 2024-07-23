@@ -3,6 +3,7 @@ package org.inspir3.telemetry.view
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.inspir3.common.DateTime
 import org.inspir3.common.compose.Graph
@@ -26,7 +28,12 @@ import java.time.LocalDateTime
 
 @Preview(showBackground = false)
 @Composable
-fun MainView(settingRoute: () -> Unit = {}, temperature: GraphData = GraphData(), pressure: GraphData = GraphData()) {
+fun MainView(
+    settingRoute: () -> Unit = {},
+    loadRoute: () -> Unit = {},
+    temperature: GraphData = GraphData(),
+    pressure: GraphData = GraphData(),
+) {
     var debugData by remember { mutableStateOf("") }
 
     val delay = DateTime.getDelay(Settings.startTime, LocalDateTime.now())
@@ -58,6 +65,12 @@ fun MainView(settingRoute: () -> Unit = {}, temperature: GraphData = GraphData()
         Row(verticalAlignment = Alignment.Bottom) {
             Button(onClick = { settingRoute() }) {
                 Text("Settings")
+            }
+            Button(
+                onClick = { loadRoute() },
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                Text("Load")
             }
             Text(
                 text = debugData,

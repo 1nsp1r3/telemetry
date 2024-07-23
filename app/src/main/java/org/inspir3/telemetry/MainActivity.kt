@@ -16,7 +16,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import org.inspir3.common.I3
 import org.inspir3.common.NotificationHelper
+import org.inspir3.common.file.Dir
 import org.inspir3.telemetry.ui.theme.TelemetryTheme
+import org.inspir3.telemetry.view.LoadView
 import org.inspir3.telemetry.view.MainView
 import org.inspir3.telemetry.view.Route
 import org.inspir3.telemetry.view.SettingsView
@@ -45,13 +47,23 @@ class MainActivity : ComponentActivity() {
                     when (currentRoute) {
                         Route.MAIN -> MainView(
                             settingRoute = { currentRoute = Route.SETTINGS },
+                            loadRoute = { currentRoute = Route.LOAD },
                             temperature = Telemetry.temperature,
                             pressure = Telemetry.pressure,
                         )
 
                         Route.SETTINGS -> SettingsView(
-                            context = this,
                             mainRoute = { currentRoute = Route.MAIN },
+                            context = this,
+                        )
+
+                        Route.LOAD -> LoadView(
+                            mainRoute = { currentRoute = Route.MAIN },
+                            loadFile = {
+                                currentRoute = Route.MAIN
+                                loadFile(Dir.getDownloadPath(), it)
+                            },
+                            files = Dir.list(Dir.getDownloadPath()),
                         )
                     }
                 }//Surface
@@ -88,5 +100,12 @@ class MainActivity : ComponentActivity() {
         this.intentService = Intent(this, MainForegroundService::class.java)
         applicationContext.startForegroundService(this.intentService)
         this.appViewModel.foregroundServiceRunning = true
+    }
+
+    private fun loadFile(path: String, filename: String) {
+        Log.i(I3.TAG, "MainActivity.loadFile(filename: $filename)")
+
+        applicationContext.stopService(this.intentService)
+        Telemetry.loadFile(path, filename)
     }
 }

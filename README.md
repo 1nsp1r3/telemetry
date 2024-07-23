@@ -2,10 +2,8 @@
 - Log and graph telemetry data from https://github.com/1nsp1r3/esp32/tree/main/bosch project
 
 # TODO
-- Recharger un ancien json
 - Envoyer donner brut sonde et filter coté android
 - Axe X en heure
-- Pouvoir désactiver le log file
 - Ne pas planter au démarrage si il manque les droits
 
 # Principe

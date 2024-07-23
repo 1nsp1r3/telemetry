@@ -19,31 +19,34 @@ class BleListener {
             Log.d(I3.TAG, "BleListener.create()")
 
             return BleGapScanCallBack.data.subscribe { data ->
-                Telemetry.history.add(data)
-
-                //Calculate minimums
-                if (data.temperature < Telemetry.min.temperature) Telemetry.min.temperature = data.temperature
-                if (data.pressure < Telemetry.min.pressure) Telemetry.min.pressure = data.pressure
-
-                //Calculate maximums
-                if (data.temperature > Telemetry.max.temperature) Telemetry.max.temperature = data.temperature
-                if (data.pressure > Telemetry.max.pressure) Telemetry.max.pressure = data.pressure
-
-                //Transform data to human text
-                Telemetry.temperature.actual = Telemetry.getTemperatureAsText(data.temperature)
-                Telemetry.temperature.min = Telemetry.getTemperatureAsText(Telemetry.min.temperature)
-                Telemetry.temperature.max = Telemetry.getTemperatureAsText(Telemetry.max.temperature)
-
-                Telemetry.pressure.actual = Telemetry.getPressureAsText(data.pressure)
-                Telemetry.pressure.min = Telemetry.getPressureAsText(Telemetry.min.pressure)
-                Telemetry.pressure.max = Telemetry.getPressureAsText(Telemetry.max.pressure)
-
-                //Actualise charts data
-                Telemetry.temperature.data = Telemetry.getLastTemperatures(Settings.temperaturePoints)
-                Telemetry.pressure.data = Telemetry.getLastPressuresAsBar(Settings.pressurePoints)
-
+                processData(data)
                 logToJsonFile(textFile, data)
             }
+        }
+
+        fun processData(data: Data) {
+            Telemetry.history.add(data)
+
+            //Calculate minimums
+            if (data.temperature < Telemetry.min.temperature) Telemetry.min.temperature = data.temperature
+            if (data.pressure < Telemetry.min.pressure) Telemetry.min.pressure = data.pressure
+
+            //Calculate maximums
+            if (data.temperature > Telemetry.max.temperature) Telemetry.max.temperature = data.temperature
+            if (data.pressure > Telemetry.max.pressure) Telemetry.max.pressure = data.pressure
+
+            //Transform data to human text
+            Telemetry.temperature.actual = Telemetry.getTemperatureAsText(data.temperature)
+            Telemetry.temperature.min = Telemetry.getTemperatureAsText(Telemetry.min.temperature)
+            Telemetry.temperature.max = Telemetry.getTemperatureAsText(Telemetry.max.temperature)
+
+            Telemetry.pressure.actual = Telemetry.getPressureAsText(data.pressure)
+            Telemetry.pressure.min = Telemetry.getPressureAsText(Telemetry.min.pressure)
+            Telemetry.pressure.max = Telemetry.getPressureAsText(Telemetry.max.pressure)
+
+            //Actualise charts data
+            Telemetry.temperature.data = Telemetry.getLastTemperatures(Settings.temperaturePoints)
+            Telemetry.pressure.data = Telemetry.getLastPressuresAsBar(Settings.pressurePoints)
         }
 
         private fun logToJsonFile(textFile: TextFile, data: Data) {
