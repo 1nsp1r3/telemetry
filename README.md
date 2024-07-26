@@ -3,8 +3,10 @@
 
 # TODO
 - Envoyer donner brut sonde et filter coté android
-- Axe X en heure
 - Ne pas planter au démarrage si il manque les droits
+- Load view :
+  - Améliorer l'icone
+  - Gestion beaucoup d'élement
 
 # Principe
 ## Hardware

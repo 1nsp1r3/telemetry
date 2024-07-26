@@ -47,7 +47,8 @@ fun MainView(
             ymax = Settings.temperatureYmax.toFloat(),
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
+                .padding(0.dp, 0.dp, 0.dp, 8.dp),
             data = temperature.data,
         )
         ChartLegendView(min = temperature.min, actual = temperature.actual, max = temperature.max, legend = "°C", color = Color.Yellow)
@@ -58,11 +59,15 @@ fun MainView(
             ymax = Settings.pressureYmax.toFloat(),
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
+                .padding(0.dp, 0.dp, 0.dp, 8.dp),
             data = pressure.data,
         )
         ChartLegendView(min = pressure.min, actual = pressure.actual, max = pressure.max, legend = " bars", color = Color.Cyan)
-        Row(verticalAlignment = Alignment.Bottom) {
+        Row(
+            verticalAlignment = Alignment.Bottom,
+            modifier = Modifier.padding(0.dp, 16.dp, 0.dp, 0.dp),
+        ) {
             Button(onClick = { settingRoute() }) {
                 Text("Settings")
             }

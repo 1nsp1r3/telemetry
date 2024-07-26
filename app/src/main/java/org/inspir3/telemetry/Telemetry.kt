@@ -2,6 +2,7 @@ package org.inspir3.telemetry
 
 import android.util.Log
 import org.inspir3.common.I3
+import org.inspir3.common.compose.Measure
 import org.inspir3.telemetry.ble.BleListener
 import org.inspir3.telemetry.ble.Data
 import org.json.JSONArray
@@ -13,35 +14,43 @@ class Telemetry {
         val pressure = GraphData()
 
         val history: MutableList<Data> = mutableListOf()
-        var min: Data = Data(temperature = 32767, pressure = 32767)
-        var max: Data = Data(temperature = -32768, pressure = -32768)
+        var min: Data = Data(ts = 0, temperature = 32767, pressure = 32767)
+        var max: Data = Data(ts = 0, temperature = -32768, pressure = -32768)
 
         private fun getShortAsFloat(value: Short): Float = value.toFloat().div(100)
 
         private fun clear() {
             Log.d(I3.TAG, "Telemetry.clear()")
 
-            min = Data(temperature = 32767, pressure = 32767)
-            max = Data(temperature = -32768, pressure = -32768)
+            min = Data(ts = 0, temperature = 32767, pressure = 32767)
+            max = Data(ts = 0, temperature = -32768, pressure = -32768)
             history.clear()
         }
 
-        fun getLastTemperatures(n: Int): List<Float> {
-            val end = history.size
-            val start = end - n
-            return history
-                .subList(if (start < 0) 0 else start, end)
-                .map { this.getShortAsFloat(it.temperature) }
-        }
-
-        fun getLastPressuresAsBar(n: Int): List<Float> {
+        fun getLastTemperatures(n: Int): List<Measure> {
             val end = history.size
             val start = end - n
             return history
                 .subList(if (start < 0) 0 else start, end)
                 .map {
-                    this.psiToBar(
-                        this.getShortAsFloat(it.pressure)
+                    Measure(
+                        ts = it.ts,
+                        value = this.getShortAsFloat(it.temperature),
+                    )
+                }
+        }
+
+        fun getLastPressuresAsBar(n: Int): List<Measure> {
+            val end = history.size
+            val start = end - n
+            return history
+                .subList(if (start < 0) 0 else start, end)
+                .map {
+                    Measure(
+                        ts = it.ts,
+                        value = this.psiToBar(
+                            this.getShortAsFloat(it.pressure)
+                        )
                     )
                 }
         }
@@ -75,6 +84,7 @@ class Telemetry {
                 val obj = array.getJSONObject(i)
                 dataList.add(
                     Data(
+                        ts = obj.getLong("ts"),
                         temperature = obj.getInt("temperature").toShort(),
                         pressure = obj.getInt("pressure").toShort(),
                     )

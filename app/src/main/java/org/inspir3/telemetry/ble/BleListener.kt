@@ -6,13 +6,9 @@ import org.inspir3.common.I3
 import org.inspir3.common.file.TextFile
 import org.inspir3.telemetry.Settings
 import org.inspir3.telemetry.Telemetry
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
 
 class BleListener {
     companion object {
-        private val zone = ZoneId.of("Europe/Paris")
         private var firstLogLine = true
 
         fun create(textFile: TextFile): Disposable {
@@ -57,10 +53,7 @@ class BleListener {
                 textFile.println("[")
             }
 
-            val now = LocalDateTime.now()
-            val zoneOffSet: ZoneOffset = zone.rules.getOffset(now)
-            val ts = now.toEpochSecond(zoneOffSet)
-            var logLine = """{"time":${ts},"temperature":${data.temperature},"pressure":${data.pressure}}"""
+            var logLine = """{"ts":${data.ts},"temperature":${data.temperature},"pressure":${data.pressure}}"""
             if (firstLogLine) {
                 firstLogLine = false
             } else {
