@@ -2,8 +2,8 @@
 - Log and graph telemetry data from https://github.com/1nsp1r3/esp32/tree/main/bosch project
 
 # TODO
+- Ca plante si le bluetooth n'est pas activé (ou le gps ?)
 - Envoyer donner brut sonde et filter coté android
-- Ne pas planter au démarrage si il manque les droits
 - Load view :
   - Améliorer l'icone
   - Gestion beaucoup d'élement
