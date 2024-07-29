@@ -1,11 +1,6 @@
 package org.inspir3.telemetry
 
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.Manifest.permission.BLUETOOTH_SCAN
-import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Intent
-import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -19,8 +14,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.core.content.ContextCompat
-import org.inspir3.common.Dialog
 import org.inspir3.common.I3
 import org.inspir3.common.NotificationHelper
 import org.inspir3.common.file.Dir
@@ -41,7 +34,8 @@ class MainActivity : ComponentActivity() {
         Log.d(I3.TAG, "MainActivity.onCreate()")
         super.onCreate(savedInstanceState)
 
-        if (this.permissionsIsMissing()) return
+        if (Init.permissionsIsMissing(this)) return
+        if (Init.requirementsIsMissing(this)) return
         this.init()
 
         setContent {
@@ -84,39 +78,6 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
 
         applicationContext.stopService(this.intentService)
-    }
-
-    private fun permissionsIsMissing(): Boolean {
-        Log.d(I3.TAG, "MainActivity.permissionsIsMissing()")
-        val missingPermissions: MutableList<String> = mutableListOf()
-        if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PERMISSION_DENIED) {
-            Log.e(I3.TAG, "Permission ACCESS_FINE_LOCATION is missing")
-            missingPermissions.add("Position")
-        }
-        if (ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PERMISSION_DENIED) {
-            Log.e(I3.TAG, "Permission ACCESS_COARSE_LOCATION is missing")
-            missingPermissions.add("Position")
-        }
-        if (ContextCompat.checkSelfPermission(this, BLUETOOTH_SCAN) == PERMISSION_DENIED) {
-            Log.e(I3.TAG, "Permission BLUETOOTH_SCAN is missing")
-            missingPermissions.add("Nearby device (Bluetooth)")
-        }
-        if (ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS) == PERMISSION_DENIED) {
-            Log.e(I3.TAG, "Permission POST_NOTIFICATIONS is missing")
-            missingPermissions.add("Notifications")
-        }
-        val missingResume = missingPermissions.distinct()
-        if (missingResume.isNotEmpty()) {
-            val message = missingResume.joinToString(
-                separator = "\n",
-            ) { "- $it" }
-            Dialog.alert(this, "Some permissions are missing", message, "Exit") {
-                Log.i(I3.TAG, "Exiting...")
-                this.finishAffinity()
-            }
-            return true
-        }
-        return false
     }
 
     private fun init() {
