@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                             mainRoute = { currentRoute = Route.MAIN },
                             loadFile = {
                                 currentRoute = Route.MAIN
-                                loadFile(Dir.getDownloadPath(), it)
+                                loadFile(Dir.getDownloadPath(), it.name)
                             },
                             files = Dir.list(Dir.getDownloadPath()),
                         )

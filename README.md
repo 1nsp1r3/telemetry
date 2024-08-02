@@ -4,8 +4,7 @@
 # TODO
 - Envoyer donner brut sonde et filter coté android
 - Load view :
-  - Améliorer l'icone
-  - Gestion beaucoup d'élement
+  - Gestion de beaucoup d'élement
 
 # Principe
 ## Hardware

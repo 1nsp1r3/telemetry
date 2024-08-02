@@ -7,27 +7,27 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import org.inspir3.common.file.Fichier
 
 /**
  * https://medium.com/make-apps-simple/multi-list-item-selection-in-jetpack-compose-301fcf375a6c
  */
 @OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = false)
 @Composable
 fun LoadView(
     mainRoute: () -> Unit = {},
-    loadFile: (String) -> Unit = {},
-    files: List<String> = listOf("item1", "item2", "item3", "item4", "item5", "item6")
+    loadFile: (Fichier) -> Unit = {},
+    files: List<Fichier>,
 ) {
+
     Column {
         Row {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
@@ -38,13 +38,13 @@ fun LoadView(
                         ),
                         leadingContent = {
                             Icon(
-                                imageVector = Icons.Rounded.Check,
+                                imageVector = ImageVector.vectorResource(id = org.inspir3.telemetry.R.drawable.chart),
                                 contentDescription = null,
                             )
                         },
                         headlineContent = {
                             Text(
-                                text = file,
+                                text = "${file.name} (${file.getFilesizeForHuman()})",
                             )
                         },
                     )

@@ -11,11 +11,18 @@ import java.io.File
 
 class Dir {
     companion object {
-        fun list(path: String): List<String> {
+        fun list(path: String): List<Fichier> {
             val file = File(path)
             val files = file.list() ?: return listOf()
             files.forEach { Log.d(I3.TAG, it) }
-            return files.toList()
+            return files
+                .toList()
+                .map {
+                    Fichier(
+                        name = it,
+                        size = File("$path/$it").length(),
+                    )
+                }
         }
 
         fun getDownloadPath(): String = "${Environment.getExternalStorageDirectory()}/Download/"
