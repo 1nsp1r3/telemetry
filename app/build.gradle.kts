@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "org.inspir3.telemetry"
-        minSdk = 34
+        minSdk = 33
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -56,10 +56,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
-    implementation("io.reactivex.rxjava3:rxjava:3.1.8")
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation(libs.rxjava3.rxjava)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.mpandroidchart)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -9,10 +9,11 @@ import org.inspir3.common.file.TextFile
 import org.inspir3.telemetry.ble.BleGapScanCallBack
 import org.inspir3.telemetry.ble.BleListener
 
-class MainForegroundService : ForegroundService(
+class MainForegroundService : ForegroundService<MainActivity>(
     icon = R.mipmap.ic_launcher,
     title = "Telemetry ON",
     content = "Receiving data...",
+    cls = MainActivity::class.java,
 ) {
     private lateinit var gap: Gap
     private lateinit var bleListenerDisposable: Disposable

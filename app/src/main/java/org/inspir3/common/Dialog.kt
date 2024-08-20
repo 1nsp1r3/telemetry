@@ -15,7 +15,7 @@ class Dialog {
                 .Builder(context)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton(buttonText) { dialogInterface: DialogInterface, i: Int -> onClick() }
+                .setPositiveButton(buttonText) { _: DialogInterface, _: Int -> onClick() }
                 .create()
                 .show()
         }

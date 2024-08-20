@@ -24,25 +24,25 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun `Fichier-getFilesizeForHuman() should return "0 o"`() {
+    fun `Fichier-getFilesizeForHuman() should return '0 o'`() {
         val file = Fichier(name = "", size = 0)
         assertEquals("0 o", file.getFilesizeForHuman())
     }
 
     @Test
-    fun `Fichier-getFilesizeForHuman() should return "1,00 Ko"`() {
+    fun `Fichier-getFilesizeForHuman() should return '1,00 Ko'`() {
         val file = Fichier(name = "", size = 1024)
         assertEquals("1,00 Ko", file.getFilesizeForHuman())
     }
 
     @Test
-    fun `Fichier-getFilesizeForHuman() should return "1,48 Ko"`() {
+    fun `Fichier-getFilesizeForHuman() should return '1,48 Ko'`() {
         val file = Fichier(name = "", size = 1519)
         assertEquals("1,48 Ko", file.getFilesizeForHuman())
     }
 
     @Test
-    fun `Fichier-getFilesizeForHuman() should return "1483,93 Ko"`() {
+    fun `Fichier-getFilesizeForHuman() should return '1483,93 Ko'`() {
         val file = Fichier(name = "", size = 1519547)
         assertEquals("1483,93 Ko", file.getFilesizeForHuman())
     }

@@ -11,8 +11,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.core.app.NotificationCompat
-import org.inspir3.telemetry.MainActivity
 
 class NotificationHelper {
     companion object {
@@ -37,7 +37,7 @@ class NotificationHelper {
         /**
          * Create a notification
          */
-        fun createNotification(context: Context, icon: Int, title: String, content: String): Notification {
+        fun <T : ComponentActivity> createNotification(context: Context, icon: Int, title: String, content: String, cls: Class<T>): Notification {
             Log.d(I3.TAG, "NotificationHelper.createNotification($title)")
 
             return NotificationCompat
@@ -46,7 +46,7 @@ class NotificationHelper {
                 .setContentTitle(title)
                 .setContentText(content)
                 .setContentIntent( //When user touch the notification
-                    createContentIntent(context)
+                    createContentIntent(context, cls)
                 )
                 .build()
         }
@@ -54,8 +54,8 @@ class NotificationHelper {
         /**
          * Need <activity android:launchMode="singleInstance"> if you doesn't want a new instance of MainActivity (even the ViewModel!)
          */
-        private fun createContentIntent(context: Context): PendingIntent {
-            val intent = Intent(context, MainActivity::class.java)
+        private fun <T : ComponentActivity> createContentIntent(context: Context, cls: Class<T>): PendingIntent {
+            val intent = Intent(context, cls)
             return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         }
     }

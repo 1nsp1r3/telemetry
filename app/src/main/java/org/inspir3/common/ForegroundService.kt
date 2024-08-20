@@ -9,11 +9,13 @@ import android.content.Intent
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
 import android.os.IBinder
 import android.util.Log
+import androidx.activity.ComponentActivity
 
-abstract class ForegroundService(
+abstract class ForegroundService<T : ComponentActivity>(
     private val icon: Int,
     private val title: String,
     private val content: String,
+    private val cls: Class<T>,
 ) : Service() {
     abstract fun onStart()
     abstract fun onStop()
@@ -23,7 +25,7 @@ abstract class ForegroundService(
 
         startForeground(
             1,
-            NotificationHelper.createNotification(this, this.icon, this.title, this.content),
+            NotificationHelper.createNotification(this, this.icon, this.title, this.content, this.cls),
             FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE,
         )
 
