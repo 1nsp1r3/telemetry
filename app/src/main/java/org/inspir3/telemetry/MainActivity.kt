@@ -36,6 +36,9 @@ class MainActivity : ComponentActivity() {
 
         if (Init.permissionsIsMissing(this)) return
         if (Init.requirementsIsMissing(this)) return
+
+        this.intentService = Intent(this, MainForegroundService::class.java)
+
         this.init()
 
         setContent {
@@ -50,6 +53,7 @@ class MainActivity : ComponentActivity() {
                         Route.MAIN -> MainView(
                             settingRoute = { currentRoute = Route.SETTINGS },
                             loadRoute = { currentRoute = Route.LOAD },
+                            exitRoute = { this.exit() },
                             temperature = Telemetry.temperature,
                             pressure = Telemetry.pressure,
                         )
@@ -73,16 +77,24 @@ class MainActivity : ComponentActivity() {
         }//setContent
     }
 
+    /**
+     * Stop the application
+     */
+    private fun exit() {
+        Log.d(I3.TAG, "MainActivity.exit()")
+        Settings.exiting = true
+        applicationContext.stopService(this.intentService)
+        Log.d(I3.TAG, "Call ComponentActivity.finish()")
+        this.finish()
+    }
+
     override fun onDestroy() {
         Log.d(I3.TAG, "MainActivity.onDestroy()")
         super.onDestroy()
-
-        applicationContext.stopService(this.intentService)
     }
 
     private fun init() {
         Log.d(I3.TAG, "MainActivity.init()")
-
         if (this.init) return
 
         Settings.load(this)
@@ -99,7 +111,6 @@ class MainActivity : ComponentActivity() {
         }
 
         NotificationHelper.createChannel(this)
-        this.intentService = Intent(this, MainForegroundService::class.java)
         applicationContext.startForegroundService(this.intentService)
         this.appViewModel.foregroundServiceRunning = true
     }

@@ -8,6 +8,7 @@ import org.inspir3.common.ble.Gap
 import org.inspir3.common.file.TextFile
 import org.inspir3.telemetry.ble.BleGapScanCallBack
 import org.inspir3.telemetry.ble.BleListener
+import kotlin.system.exitProcess
 
 class MainForegroundService : ForegroundService<MainActivity>(
     icon = R.mipmap.ic_launcher,
@@ -35,6 +36,11 @@ class MainForegroundService : ForegroundService<MainActivity>(
         this.closeFile()
 
         gap.stopScan()
+
+        if (Settings.exiting){
+            Log.i(I3.TAG, "MainForegroundService.exitProcess(0)")
+            exitProcess(0)
+        }
     }
 
     private fun createLogFile() {

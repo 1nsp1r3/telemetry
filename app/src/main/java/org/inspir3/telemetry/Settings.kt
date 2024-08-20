@@ -37,6 +37,7 @@ class Settings {
         var pressureYmax: Int = Default.PRESSURE_YMAX
         var pressurePoints: Int = Default.PRESSURE_POINTS
         var logFile: Boolean = Default.LOG_FILE
+        var exiting: Boolean = false //Bricolage
 
         //Divers
         val startTime: LocalDateTime = LocalDateTime.now()

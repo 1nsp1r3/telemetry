@@ -31,6 +31,7 @@ import java.time.LocalDateTime
 fun MainView(
     settingRoute: () -> Unit = {},
     loadRoute: () -> Unit = {},
+    exitRoute: () -> Unit = {},
     temperature: GraphData = GraphData(),
     pressure: GraphData = GraphData(),
 ) {
@@ -76,6 +77,11 @@ fun MainView(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 Text("Load")
+            }
+            Button(
+                onClick = { exitRoute() },
+            ) {
+                Text("Exit")
             }
             Text(
                 text = debugData,
