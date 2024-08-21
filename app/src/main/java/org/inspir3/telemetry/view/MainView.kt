@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,26 +20,35 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import org.inspir3.common.DateTime
 import org.inspir3.common.compose.Graph
 import org.inspir3.telemetry.GraphData
 import org.inspir3.telemetry.Settings
+import org.inspir3.telemetry.SharedMemory
 import org.inspir3.telemetry.Telemetry
+import java.time.Instant
 import java.time.LocalDateTime
+import java.util.Locale
 
 @Preview(showBackground = false)
 @Composable
 fun MainView(
     settingRoute: () -> Unit = {},
     loadRoute: () -> Unit = {},
+    freeRoute: () -> Unit = {},
     exitRoute: () -> Unit = {},
     temperature: GraphData = GraphData(),
     pressure: GraphData = GraphData(),
 ) {
-    var debugData by remember { mutableStateOf("") }
+    var now by remember { mutableStateOf(getNowText()) }
 
-    val delay = DateTime.getDelay(Settings.startTime, LocalDateTime.now())
-    debugData = "$delay | data count: ${Telemetry.history.size}"
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(1000)
+            now = getNowText()
+        }
+    }
 
     Column(Modifier.fillMaxWidth()) {
         Graph(
@@ -69,22 +79,42 @@ fun MainView(
             verticalAlignment = Alignment.Bottom,
             modifier = Modifier.padding(0.dp, 16.dp, 0.dp, 0.dp),
         ) {
-            Button(onClick = { settingRoute() }) {
+            Button(
+                onClick = { settingRoute() },
+                modifier = Modifier.padding(0.dp, 0.dp, 16.dp, 0.dp),
+            ) {
                 Text("Settings")
             }
             Button(
                 onClick = { loadRoute() },
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(0.dp, 0.dp, 16.dp, 0.dp),
             ) {
                 Text("Load")
+            }
+            Button(
+                onClick = { freeRoute() },
+                modifier = Modifier.padding(0.dp, 0.dp, 16.dp, 0.dp),
+            ) {
+                Text("100")
             }
             Button(
                 onClick = { exitRoute() },
             ) {
                 Text("Exit")
             }
+        }
+        Row {
             Text(
-                text = debugData,
+                text = now,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                fontSize = 12.sp,
+            )
+        }
+        Row {
+            Text(
+                text = buildDebugData(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
@@ -93,4 +123,25 @@ fun MainView(
             )
         }
     }
+}
+
+fun buildDebugData(): String {
+    val endTs = Instant.now().epochSecond
+
+    val secondsElapsed = endTs - Settings.startTs
+    val averageReception: Double = if (secondsElapsed == 0L) 0.0 else SharedMemory.debug.bleCount.toDouble() / secondsElapsed.toDouble()
+
+    val delay = DateTime.getDelay(startTs = Settings.startTs, endTs = endTs)
+
+    var debugData = delay
+    debugData += " | Ble: ${DateTime.fromLocalDateTimeToHHmmss(SharedMemory.debug.lastBleReception)}"
+    debugData += " count: ${SharedMemory.debug.bleCount}"
+    debugData += " avg: ${String.format(Locale.FRANCE, "%.2f", averageReception)}"
+    debugData += " | history: ${Telemetry.history.size}"
+
+    return debugData
+}
+
+fun getNowText(): String {
+    return DateTime.fromLocalDateTimeToHHmmss(LocalDateTime.now())
 }

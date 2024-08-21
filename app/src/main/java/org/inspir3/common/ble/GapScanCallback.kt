@@ -8,6 +8,8 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.util.Log
 import org.inspir3.common.I3
+import org.inspir3.telemetry.SharedMemory
+import java.time.LocalDateTime
 
 abstract class GapScanCallback : ScanCallback() {
     abstract fun onData(services: Map<String, ByteArray>)
@@ -19,6 +21,9 @@ abstract class GapScanCallback : ScanCallback() {
      */
     override fun onScanResult(callbackType: Int, result: ScanResult) {
         //Log.d(I3.TAG, "GapScanCallback.onScanResult()")
+
+        SharedMemory.debug.lastBleReception = LocalDateTime.now()
+        SharedMemory.debug.bleCount++
 
         //Convert Map<ParcelUuid, byte[]> to Map<String, ByteArray>
         val newMap: MutableMap<String, ByteArray> = mutableMapOf()

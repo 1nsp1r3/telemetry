@@ -37,7 +37,7 @@ class MainForegroundService : ForegroundService<MainActivity>(
 
         gap.stopScan()
 
-        if (Settings.exiting){
+        if (SharedMemory.stopApplication){
             Log.i(I3.TAG, "MainForegroundService.exitProcess(0)")
             exitProcess(0)
         }

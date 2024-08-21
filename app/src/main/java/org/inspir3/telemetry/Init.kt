@@ -4,7 +4,6 @@ import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.BLUETOOTH_SCAN
 import android.Manifest.permission.POST_NOTIFICATIONS
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.location.LocationManager
@@ -19,7 +18,7 @@ import org.inspir3.common.ble.Gap
  */
 class Init {
     companion object {
-        fun permissionsIsMissing(activity: Activity): Boolean {
+        fun permissionsIsMissing(activity: MainActivity): Boolean {
             Log.d(I3.TAG, "Init.permissionsIsMissing()")
 
             val missing: MutableList<String> = mutableListOf()
@@ -45,16 +44,13 @@ class Init {
                 val message = missingResume.joinToString(
                     separator = "\n",
                 ) { "- $it" }
-                Dialog.alert(activity, "Some permissions are missing", message, "Exit") {
-                    Log.i(I3.TAG, "Exiting...")
-                    activity.finishAffinity()
-                }
+                Dialog.alert(activity, "Some permissions are missing", message, "Exit") { activity.stopApplication() }
                 return true
             }
             return false
         }
 
-        fun requirementsIsMissing(activity: Activity): Boolean {
+        fun requirementsIsMissing(activity: MainActivity): Boolean {
             Log.d(I3.TAG, "Init.requirementsIsMissing()")
 
             val missing: MutableList<String> = mutableListOf()
@@ -71,10 +67,7 @@ class Init {
                 val message = missing.joinToString(
                     separator = "\n",
                 ) { "- $it" }
-                Dialog.alert(activity, "Some requirements are missing", "Please enable:\n$message", "Exit") {
-                    Log.i(I3.TAG, "Exiting...")
-                    activity.finishAffinity()
-                }
+                Dialog.alert(activity, "Some requirements are missing", "Please enable:\n$message", "Exit") { activity.stopApplication() }
                 return true
             }
             return false

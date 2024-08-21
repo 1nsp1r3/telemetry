@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -27,8 +26,6 @@ class MainActivity : ComponentActivity() {
     private var init = false
 
     private lateinit var intentService: Intent
-
-    private val appViewModel by viewModels<AppViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(I3.TAG, "MainActivity.onCreate()")
@@ -53,7 +50,8 @@ class MainActivity : ComponentActivity() {
                         Route.MAIN -> MainView(
                             settingRoute = { currentRoute = Route.SETTINGS },
                             loadRoute = { currentRoute = Route.LOAD },
-                            exitRoute = { this.exit() },
+                            freeRoute = { this.shrinkHistory(100) },
+                            exitRoute = { this.stopApplication() },
                             temperature = Telemetry.temperature,
                             pressure = Telemetry.pressure,
                         )
@@ -77,12 +75,20 @@ class MainActivity : ComponentActivity() {
         }//setContent
     }
 
+    private fun shrinkHistory(count: Int){
+        if (Telemetry.history.size < count) {
+            Telemetry.history.subList(0, Telemetry.history.size).clear()
+        }else{
+            Telemetry.history.subList(0, count).clear()
+        }
+    }
+
     /**
      * Stop the application
      */
-    private fun exit() {
-        Log.d(I3.TAG, "MainActivity.exit()")
-        Settings.exiting = true
+    fun stopApplication() {
+        Log.d(I3.TAG, "MainActivity.stopApplication()")
+        SharedMemory.stopApplication = true
         applicationContext.stopService(this.intentService)
         Log.d(I3.TAG, "Call ComponentActivity.finish()")
         this.finish()
@@ -105,14 +111,14 @@ class MainActivity : ComponentActivity() {
     private fun startForegroundService() {
         Log.d(I3.TAG, "MainActivity.startForegroundService()")
 
-        if (this.appViewModel.foregroundServiceRunning) {
+        if (SharedMemory.foregroundServiceRunning) {
             Log.i(I3.TAG, "ForegroundService already running")
             return
         }
 
         NotificationHelper.createChannel(this)
         applicationContext.startForegroundService(this.intentService)
-        this.appViewModel.foregroundServiceRunning = true
+        SharedMemory.foregroundServiceRunning = true
     }
 
     private fun loadFile(path: String, filename: String) {

@@ -12,7 +12,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import org.inspir3.common.I3
+import java.time.Instant
 import java.time.LocalDateTime
+import java.util.Locale
 
 private val Context.dataStore: androidx.datastore.core.DataStore<Preferences> by preferencesDataStore(name = "inspir3")
 
@@ -37,10 +39,9 @@ class Settings {
         var pressureYmax: Int = Default.PRESSURE_YMAX
         var pressurePoints: Int = Default.PRESSURE_POINTS
         var logFile: Boolean = Default.LOG_FILE
-        var exiting: Boolean = false //Bricolage
 
         //Divers
-        val startTime: LocalDateTime = LocalDateTime.now()
+        val startTs: Long = Instant.now().epochSecond
 
         fun load(context: Context) {
             Log.d(I3.TAG, "Setting.load()")
