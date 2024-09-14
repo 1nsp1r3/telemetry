@@ -1,0 +1,34 @@
+name: Build APK
+
+on:
+  push:
+    tags:
+    - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu' # See 'Supported distributions' for available options
+          java-version: '17'
+          cache: 'gradle'
+
+      - run: echo "version=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
+      - run: echo "repositoryName=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+      - run: chmod +x ./gradlew
+      - run: ./gradlew assembleDebug
+      - run: mv ./app/build/outputs/apk/debug/app-debug.apk ./app/build/outputs/apk/debug/${{env.repositoryName}}-${{env.version}}.apk
+      - run: rm ./app/build/outputs/apk/debug/output-metadata.json
+
+      - name: Publish release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "app/build/outputs/apk/debug/${{env.repositoryName}}-${{env.version}}.apk"

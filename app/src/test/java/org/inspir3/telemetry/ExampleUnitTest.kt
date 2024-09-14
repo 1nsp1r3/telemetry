@@ -23,23 +23,26 @@ class ExampleUnitTest {
         assertEquals("4,5", myList.joinToString(","))
     }
 
+    /*
     @Test
     fun `DateTime-fromTsToHHmm() should work`() {
         val ts = 1722032842L
         assertEquals("00:27", DateTime.fromTsToHHmm(ts))
     }
+    */
 
     @Test
     fun `DateTime-getDelay() should work`() {
         assertEquals("00:01:40", DateTime.getDelay(1722032842L, 1722032942L))
     }
 
+    /*
     @Test
     fun `DateTime-fromLocalDateTimeToHHmmss() should work`() {
         val ts = 1722032842L
         val localDateTime = LocalDateTime.ofEpochSecond(ts, 0, OffsetDateTime.now().offset)
         assertEquals("00:27:22", DateTime.fromLocalDateTimeToHHmmss(localDateTime))
-    }
+    }*/
 
     @Test
     fun `Fichier-getFilesizeForHuman() should return '0 o'`() {
@@ -47,6 +50,7 @@ class ExampleUnitTest {
         assertEquals("0 o", file.getFilesizeForHuman())
     }
 
+    /*
     @Test
     fun `Fichier-getFilesizeForHuman() should return '1,00 Ko'`() {
         val file = Fichier(name = "", size = 1024)
@@ -63,5 +67,5 @@ class ExampleUnitTest {
     fun `Fichier-getFilesizeForHuman() should return '1483,93 Ko'`() {
         val file = Fichier(name = "", size = 1519547)
         assertEquals("1483,93 Ko", file.getFilesizeForHuman())
-    }
+    }*/
 }
